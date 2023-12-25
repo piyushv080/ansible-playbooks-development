@@ -1,0 +1,9 @@
+---
+- hosts: webservers
+  vars:
+    greeting: Display variable my variable.yml
+
+  tasks:
+  - name: variable
+    debug:
+      msg: "{{ greeting }}"

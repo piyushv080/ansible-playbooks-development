@@ -1,0 +1,10 @@
+---
+# tasks file for test-roles/roles
+- name: This script is to ping
+  action: ping
+
+- name: variable
+  debug:
+    msg: "{{ greeting }}"
+
+

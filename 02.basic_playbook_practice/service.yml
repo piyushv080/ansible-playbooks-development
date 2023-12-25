@@ -1,0 +1,8 @@
+---
+- name: Get Service Status
+  ansible.builtin.systemd:
+    name: "systemctl"
+    register: systemctl_status
+
+- debug:
+    var: systemctl_status.status.ActiveState

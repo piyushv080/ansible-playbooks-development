@@ -1,0 +1,10 @@
+---
+- name: disk space
+  hosts: webservers
+  tasks:
+    - name: disk usage
+      command: df -h
+      register: space
+    - debug:
+        var: space.stdout_lines
+

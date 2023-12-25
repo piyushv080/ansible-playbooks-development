@@ -1,0 +1,9 @@
+multilineString: |
+   this is my multi line string
+   and I can convert this mult line string to single line 
+   by just changing | to >.
+#multilineString: >
+ #  this is my multi line string
+  # and I can convert this mult line string to single line 
+   #by just changing | to >.
+string: Helllo 

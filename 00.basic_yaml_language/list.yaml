@@ -1,0 +1,17 @@
+# example for list
+--- 
+java: 
+  developer: "james gosling"
+  system: "high level programming language"
+  used: 
+    - "desktop application"
+    - "android application"
+    - "web development"
+python: 
+  developer: "guido van rossum"
+  system: "high level programming language"
+  used: 
+    - "Web Development"
+    - Automation
+    - Scripting
+    ...

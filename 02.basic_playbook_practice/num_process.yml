@@ -1,0 +1,12 @@
+---
+- hosts: webservers
+  tasks:
+   - name: 'check running processes'
+     shell: ps -aux | head -5
+     register: result
+   
+   - name: show result
+     debug:
+           var: result
+
+

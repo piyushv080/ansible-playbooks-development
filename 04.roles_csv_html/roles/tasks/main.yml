@@ -1,0 +1,24 @@
+---
+# tasks file for test-roles/roles
+- name: read the csv files
+  read_csv:
+    path: /root/ansible_roles/sample.csv
+    fieldnames: Name
+    delimiter: ';'
+  register: user
+
+- name: get the json
+  debug:
+    msg: "{{ user }}"
+
+- name: convert csv to html using python script
+  script: /root/ansible_roles/roles/files/script.py
+  args:
+     executable: /bin/python3
+  register: python_result
+
+- name: get output of csv in html
+  debug:
+    var: python_result.stdout
+  
+

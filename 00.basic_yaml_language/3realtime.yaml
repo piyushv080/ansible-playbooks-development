@@ -1,0 +1,9 @@
+# simple command example 
+command:
+  - cd /etc/
+  - sh 
+  - -c 
+  - | 
+   # you can write shell script here
+   if 
+   else

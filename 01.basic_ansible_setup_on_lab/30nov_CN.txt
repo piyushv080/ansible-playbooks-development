@@ -1,0 +1,56 @@
+ 1  ping 192.168.56.102
+    2  ping 192.168.56.103
+    3  ping managednode1
+    4  ping managednode2
+    5  ping controlnode
+    6  clear
+    7  cat /etc/host
+    8  cat /etc/hosts
+    9  ssh-keygen
+   10  ssh-copy-id managednode1
+   11  ssh-copy-id managednode2
+   12  yum install -y epel-release
+   13  yum install -y ansible
+   14  ssh-copy-id managednode2
+   15  ansible all -m ping
+   16  clear
+   17  ssh-copy-id managednode2
+   18  vi /etc/hosts
+   19  hostnamectl set-hostname controlnode.example.com
+   20  hostnamectl --host managednode1 set-hostname managedname1                                                                       .example.com
+   21  hostnamectl --host managednode2 set-hostname managedname2                                                                       .example.com
+   22  ansible all -m ping
+   23  vi /etc/hosts
+   24  ansible all -m ping
+   25  vi /etc/ansible/hosts
+   26  ansible all -m ping
+   27  ansible web -m command -a "uptime"
+   28  vi /etc/ansible/hosts
+   29  vi /etc/hosts
+   30  ansible web -m command -a "uptime"
+   31  clear
+   32  ansible all -m ping
+   33  ansible web -m command -a "cat /etc/os-release"
+   34  ls
+   35  cd webserver/
+   36  cat > ansible.cfg
+   37  vi /etc/ansible/ansible.cfg
+   38  vi ansible.cfg
+   39  ansible --version
+   40  clear
+   41  history
+   42  ansible-doc -l
+   43  ansible-doc -l | wc -l
+   44  ansible-doc user
+   45  zxxasmsisis
+   46  ansoa
+   47  ss   . a
+   48  oxt
+   49  exit
+   50  history
+   51  ansible-doc apt
+   52  ansible-doc yum
+   53  ansible all -m shell -a "uname -a"
+   54  ansible all -m shell -a "pwd"
+   55  ansible centos- m yum -a "name=httpd state=latest"
+   56  ansible ubuntu -m apt -a "name=nginx state=latest"

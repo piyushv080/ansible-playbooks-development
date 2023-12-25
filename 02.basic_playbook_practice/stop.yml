@@ -1,0 +1,7 @@
+---
+- hosts: webservers
+  tasks:
+  - name: ensure httpd service is stopped
+    service:
+      name: httpd
+      state: stopped

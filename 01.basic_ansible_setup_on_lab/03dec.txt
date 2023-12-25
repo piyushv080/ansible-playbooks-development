@@ -1,0 +1,191 @@
+cat usermgmt1.yml
+---
+- hosts: web
+become: yes
+tasks:
+- name: user creation
+user:
+name: ansible
+state: present
+groups: wheel
+
+ansible all -m shell -a "grep ansible /etc/passwd"
+243 ansible all -m shell -a "echo admin123| passwd ansible --stdin"
+
+ssh managednode1
+
+passwd ansible
+
+
+---
+- hosts: all
+become: yes
+tasks:
+
+- name: Remove the user ansible with existing group
+user:
+name: ansible
+state: absent
+# remove: yes
+
+
+ansible all -m shell -a "grep ansible /etc/passwd"
+
+
+ansible all -m shell -a "ls -ld /home/ansible"
+255 ansible all -m shell -a "rm -rf /home/ansible"
+256 ansible all -m shell -a "ls -ld /home/ansible"
+
+
+
+ansible all -m shell -a "useradd -d /home/ansible -m -s /bin/bash ansible"
+ansible all -m shell -a "ls -ld /home/ansible"
+ansible all -m shell -a "echo admin123| passwd ansible --stdin"
+
+ssh managednode1
+passwd ansible
+
+ssh ansible@managednode2
+ssh ansible@managednode1
+ssh ansible@controlnode
+
+
+********************************************************************************************************************
+
+cat user1.yml
+---
+- hosts: centos
+become: yes
+tasks:
+- name: create a user
+user:
+name: newuser2
+state: present
+groups: wheel
+- name: set passwd
+command: " echo admin123| passwd newuser2 --stdin"
+
+
+
+cat partition1.yml
+---
+- hosts: managednode2
+become: yes
+gather_facts: no
+tasks:
+- name: create a 1 GB Partition
+parted:
+device: /dev/sdb
+number: 1
+state: present
+part_end: 1GB
+
+
+ansible managednode2 -m shell -a "lsblk"
+
+ansible managednode2 -m shell -a "lsblk|grep sdb"
+
+
+
+cat partition1.yml
+---
+- hosts: managednode2
+become: yes
+gather_facts: no
+tasks:
+- name: create a 1 GB Partition
+parted:
+device: /dev/sdb
+number: 1
+state: present
+part_end: 1GB
+
+
+- name: Format the sdb1 partition
+filesystem:
+fstype: xfs
+dev: /dev/sdb1
+
+ansible managednode2 -m shell -a "lsblk|grep sd[b/c]"
+
+sudo ansible managednode2 -m shell -a "blkid|grep sd[b/c]"
+
+---
+- hosts: managednode2
+become: yes
+gather_facts: no
+tasks:
+- name: create a 1 GB Partition
+parted:
+device: /dev/sdb
+number: 1
+state: present
+part_end: 1GB
+
+
+- name: Format the sdb1 partition
+filesystem:
+fstype: xfs
+dev: /dev/sdb1
+
+
+- name: Mount device with ID
+mount:
+path: /data
+src: UUID="9a515956-5280-48f4-be85-1e8ee56005a8"
+#src: /dev/sdb1
+fstype: xfs
+state: present
+
+
+
+sudo ansible managednode2 -m shell -a "df -hT|grep /data"
+
+
+cat partition1_uuid.yml
+---
+- hosts: managednode2
+become: yes
+gather_facts: no
+tasks:
+- name: create a 1 GB Partition
+parted:
+device: /dev/sdb
+number: 1
+state: present
+part_end: 1GB
+
+
+- name: Format the sdb1 partition
+filesystem:
+fstype: xfs
+dev: /dev/sdb1
+
+
+- name: Mount device with ID
+mount:
+path: /data
+src: UUID="9a515956-5280-48f4-be85-1e8ee56005a8"
+#src: /dev/sdb1
+fstype: xfs
+state: mounted
+
+
+
+cat partition1_uuid.yml
+---
+- hosts: managednode2
+become: yes
+gather_facts: no
+tasks:
+- name: Unmount the partition
+mount:
+path: /data
+state: absent
+
+
+- name: deletea 1 GB Partition
+parted:
+device: /dev/sdb
+number: 1
+state: absent

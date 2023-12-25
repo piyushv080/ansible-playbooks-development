@@ -1,0 +1,13 @@
+# object in yaml 
+application:
+  users:
+    -
+      username: something
+      password: something
+      description: applicaiton
+      roles:
+        - READ
+        - WRITE
+        - VIEW
+        - DELETE
+

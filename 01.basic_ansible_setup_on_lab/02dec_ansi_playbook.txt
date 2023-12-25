@@ -1,0 +1,199 @@
+cat ping1.yml
+---
+- hosts: all
+tasks:
+- name: This script is to ping
+action: ping
+
+
+mkdir playbook
+cd playbook/
+vi ping1.yml
+vim ping1.yml
+ansible-playbook ping1.yml --syntax-check
+ansible-playbook ping1.yml -C
+ansible-playbook ping1.yml
+
+
+cat ping2.yml
+---
+- hosts: all
+tasks:
+- name: Task1 this script is to ping
+action: ping
+
+- name: Task2 to display uptime
+shell: uptime
+- name: Task3 to display pwd
+shell: pwd
+...
+
+
+
+cat uptime.yml
+---
+- name: Check the remote host uptime
+hosts: web
+tasks:
+- name: Execute the Uptime command over Command module
+register: out
+command: "uptime"
+- debug:
+var: out.stdout
+...
+
+
+
+cat commads.yml
+---
+- name: This Yml is to run multiple commands using command module
+hosts: all
+tasks:
+- name: Task1 is to display hello and display output
+register: out
+command: "echo Hello"
+
+- debug:
+var: out.stdout
+
+- name: Task2 is to display uptime and display output
+register: out1
+command: "uptime"
+
+- debug:
+var: out1.stdout
+
+
+
+# my manual entries
+
+[local]
+controlnode ansible_connection=local
+
+[ubuntu]
+managednode1
+
+[centos1]
+managednode2
+
+[centos:children]
+local
+centos1
+
+[web:children]
+ubuntu
+centos1
+
+vi /etc/ansible/hosts
+
+
+************************************************************************************************************
+
+cat yum1.yml
+---
+- hosts: centos
+become: yes
+tasks:
+- name: Install a package cups using yum
+yum:
+name: cups
+state: latest
+[root@localhost playbook]# ansible-playbook yum1.yml --syntax-check
+
+playbook: yum1.yml
+[root@localhost playbook]# ansible-playbook yum1.yml
+
+
+
+cat yum2.yml
+---
+- hosts: centos
+become: yes
+gather_facts: no
+tasks:
+
+- name: Install httpd
+yum:
+name: httpd
+state: latest
+
+- name: Start or Restart the Httpd service
+service:
+name: httpd
+state: restarted
+enabled: yes
+[root@localhost playbook]# ansible-playbook yum2.yml
+
+
+
+
+cat index.html
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Chinnajee’s 1st Web page</title>
+<style>
+h1 {
+color: green;
+}
+
+h2 {
+font-family: Impact;
+}
+
+body {
+text-align: center;
+}
+</style>
+</head>
+
+<body>
+<h1>Keerti Web Service </h1>
+<h2> KWS Default Web Page created by Chinna </h2>
+<p>
+For returning the hostname of the current
+URL, double click the "Return hostname" button:
+</p>
+<button ondblclick="myhost()">
+Return hostname
+</button>
+<p id="hostname"></p>
+<script>
+function myhost() {
+var h = location.hostname;
+document.getElementById("hostname").innerHTML = h;
+}
+</script>
+</body>
+
+</html>
+
+
+
+
+
+[root@localhost playbook]# cat yum2.yml
+---
+- hosts: centos
+become: yes
+gather_facts: no
+tasks:
+
+- name: Install httpd
+yum:
+name: httpd
+state: latest
+
+- name: Start or Restart the Httpd service
+service:
+name: httpd
+state: restarted
+enabled: yes
+
+- name: Copy the index.html to /var/www/html
+copy:
+src: index.html
+dest: /var/www/html/
+[root@localhost playbook]#

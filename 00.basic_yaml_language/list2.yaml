@@ -1,0 +1,19 @@
+# More About list
+---
+-mobile:
+  name: realme
+  model: narzo
+  spec : 
+    - ram 2gb
+    - cpu mediatek
+    - memory 20gb
+
+-laptop:
+  name: lenovo
+  model: thinkpad
+  spec :
+    - ram 8 gb 
+    - storage 128gb
+    - processor amd ryzen
+  
+...

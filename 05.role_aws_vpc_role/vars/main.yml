@@ -1,0 +1,27 @@
+---
+# vars file for vpc-role
+aws_access_key: ""
+aws_secret_key: ""
+region: "ap-south-1"
+
+#vpc
+vpc_cidr: 10.10.0.0/24
+vpc_name: "Production-VPC"
+
+#subnet
+subnet_name: "Production-Subnet"
+subnet_cidr: 10.10.0.0/26
+
+#igw
+igw_name: "igw"
+
+#route table name
+route_name: "Production-IGW"
+
+security_group_name: "Production-SG"
+
+ec2_tag: "Production-Instance"
+
+#key storage location
+ec2_key_directory: "/home/ansible"
+keypair_name: "Production_key"

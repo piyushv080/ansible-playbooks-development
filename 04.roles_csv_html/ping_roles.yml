@@ -1,0 +1,7 @@
+---
+- name: Testing my ansible Roles
+  hosts: webservers
+  tasks:
+   - name: Include Role
+     include_role:
+      name: roles

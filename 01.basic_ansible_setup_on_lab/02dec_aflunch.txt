@@ -1,0 +1,123 @@
+cat yum3.yml
+---
+- hosts: centos
+become: yes
+gather_facts: no
+tasks:
+
+- name: Remove httpd
+yum:
+name: httpd
+state: absent
+
+- name: Remove the file index.html from /var/www/html
+file:
+dest: /var/www/html/index.html
+state: absent
+
+
+cat grpmgmt1.yml
+---
+- hosts: all
+become: yes
+gather_facts: no
+tasks:
+- name: Create a group name grp1
+group:
+name: grp1
+state: present
+[root@localhost playbook]# cat dispgrp.yml
+---
+- hosts: all
+become: yes
+tasks:
+- name: display the group
+command: "tail -1 /etc/group"
+register: grp
+
+- debug:
+var: grp.stdout
+
+
+
+
+
+
+[root@localhost playbook]# cat usermgmt.yml
+---
+- hosts: all
+become: yes
+tasks:
+
+- name: create a group
+group:
+name: group1
+state: present
+gid: 2002
+
+- name: create a user with the new group
+user:
+name: user1
+state: present
+
+- name: create a user with existing group
+user:
+name: user2
+group: group1
+# groups: wheel
+groups: sudo
+uid: 2001
+shell: /bin/bash
+comment: "developer"
+[root@localhost playbook]#
+
+
+[root@localhost playbook]# cat userdel1.yml
+---
+- hosts: all
+become: yes
+tasks:
+
+- name: remove the user user1 with group
+user:
+name: user1
+state: absent
+
+- name: Remove the user user2 with existing group
+user:
+name: user2
+state: absent
+remove: yes
+
+- name: Remove a group
+group:
+name: group1
+state: absent
+
+
+cat usermgmt.yml
+---
+- hosts: all
+become: yes
+tasks:
+
+- name: create a group
+group:
+name: group1
+state: present
+gid: 2003
+
+- name: create a user with the new group
+user:
+name: user1
+state: present
+
+- name: create a user with existing group
+user:
+name: user2
+group: group1
+groups: wheel
+# groups: sudo
+uid: 2002
+shell: /bin/csh
+comment: "DevOps Engineer"

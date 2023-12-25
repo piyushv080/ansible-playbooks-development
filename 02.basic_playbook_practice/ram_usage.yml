@@ -1,0 +1,11 @@
+---
+- name: Ram Utilization 
+  hosts: webservers
+  tasks:
+    - name: ram usage from ansible module
+      vars:
+        msg: | 
+          RAM: "{{ ansible_memtotal_mb }}"
+      
+      debug: 
+        msg: "{{ msg.split('\n') }}"

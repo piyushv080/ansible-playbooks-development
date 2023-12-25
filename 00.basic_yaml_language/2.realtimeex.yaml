@@ -1,0 +1,11 @@
+# mosquitto configuration file example 
+apiVersion: v1
+kind: ConfigMap
+metedata:
+  name: mosquitto-congif-file
+data:
+  mosquitoo.conf: |
+    log_dest stdout
+    log_type all
+    log_timestamp true
+    listner 9001

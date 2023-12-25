@@ -1,0 +1,19 @@
+# Boolean in yaml 
+---
+- piyush:
+    name: piyush verma
+    rollno: 121
+    branch: computer science
+    subject:
+      - programming language
+      - web development
+      - cyber security
+    
+    result:
+      dbms: 70
+      ds: 68
+      os: 77
+    
+    passed : TRUE
+
+    ...

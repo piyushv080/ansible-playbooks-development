@@ -1,0 +1,51 @@
+ansible all -m file -a "dest=/home/newfold1 state=directory"
+252 ansible all -m file -a "dest=/home/newfold1/demofile1 state=touch"
+253 ansible all -m file -a "src=/home/newfold1/demofile1 dest=/tmp/demofile1"
+254 ansible all -m copy -a "src=/home/newfold1/demofile1 dest=/tmp/demofile1"
+
+
+ansible all -m copy -a 'content="\n Welcome to my training \n\n" dest=/etc/motd'
+
+
+****************************************************************************************************
+
+cat /etc/hosts
+192.168.56.101 controlnode.example.comi controlnode
+192.168.56.104 managednode1.example.com managednode1
+192.168.56.103 managednode2.example.com managednode2
+
+#user entries
+192.168.56.101 ansibleserver.google1.com ansibleserver
+
+
+
+ansible all -m copy -a 'src=/etc/hosts dest=/etc/hosts'
+
+
+cat index.html
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Welcome to my default index page</h1>
+<p>Hi Team this is created by V.Chinnajee Rao</p>
+
+</body>
+</html>
+ansible all -m copy -a 'src=/root/index.html dest=/var/www/html/index.html'
+ansible all -m copy -a 'src=/root/index.html dest=/var/www/html/'
+ansible all -m file -a 'dest=/var/www/html/index.html state=absent'
+
+
+
+________________________________________________________
+Scenario 1:
+ansible local -m user -a "name=ansible state=present"
+ansible local -m file -a "dest=/root/index1.html owner=ansible group=ansible mode=0644"
+ansible local -m file -a "dest=/root/index1.html owner=ansible group=ansible mode=0600"
+
+
+Scenario 2:
+ansible local -m user -a "name=ansible1 state=present"
+ansible local -m file -a "dest=/root/index2.html state=touch"
+ansible local -m file -a "dest=/root/index2.html owner=ansible1 group=ansible1 mode=0600"

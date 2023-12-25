@@ -1,0 +1,4 @@
+apt install -u openssh-history
+vi /etc/ssh/sshd-config
+systemctl reload sshd
+passwd root

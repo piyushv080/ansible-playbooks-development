@@ -1,0 +1,3 @@
+---
+# vars file for test-roles/roles
+greeting: Display variable from vars/main.yml
