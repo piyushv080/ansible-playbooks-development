@@ -1,0 +1,42 @@
+# Description: Check if NFS location is accessible on the server
+# Variables:
+#   nfs_location
+#     nfs_location: nfs_stale -
+#       cd or df will hang
+#
+# Example:
+#   ansible-playbook -l ubuntu_test_server -e "nfs_location=/path/to/location" check_nfs.yml
+
+- name: Check NFS
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check if the requested location is accessible
+      shell: "timeout 30 ls -l {{ nfs_location }} | wc -l"
+      register: is_accessible_1
+      ignore_errors: yes
+
+    - debug:
+        var: is_accessible_1
+
+    - name: Try to fix the issue
+      block:
+        - name: Mount all mounts with mount -av
+          shell: "timeout 10 mount -av"
+          register: try_mount
+          ignore_errors: yes
+
+        - debug:
+            var: try_mount
+
+        - fail:
+            msg: "mount -av command failed"
+          when: try_mount is failed
+
+        - name: Check if the requested location is accessible after mount -av
+          shell: "timeout 30 ls -l {{ nfs_location }} | wc -l"
+          register: is_accessible_2
+
+        - fail:
+          when: is_accessible_2.stdout | int < 2
+      when: is_accessible_1.stdout | int < 2
