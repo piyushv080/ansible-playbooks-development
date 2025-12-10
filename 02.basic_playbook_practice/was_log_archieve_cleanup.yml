@@ -1,0 +1,97 @@
+$ cat /srv/scripts/ticketreduction/was_log_cleanup.yml
+# Description: Clean-up WAS logs (WebSphere)
+# Author: Automation Practice
+# Variables:
+#   ret_days: retention window for archives to keep (e.g. "14d")
+#   threshold_free_ratio: minimum free space ratio required after cleanup (e.g. 0.20 for 20%)
+
+- name: Clean WAS logs
+  hosts: was*
+  become: true
+  gather_facts: false
+  vars:
+    logs_root: /websphere/logs
+    ret_days: "14d"                 # age spec for find: "Xd", "Xw", "Xm", "Xy"
+    threshold_free_ratio: 0.20      # fail if free space < 20%
+  tasks:
+    - name: Capture usage before the cleanups
+      command: df -h {{ logs_root }}
+      register: bf_clnup
+
+    - debug:
+        var: bf_clnup.stdout_lines
+
+    - name: Find WAS SystemOut/SystemErr logs
+      find:
+        paths: "{{ logs_root }}"
+        file_type: file
+        recurse: true
+        patterns:
+          - 'SystemOut_*.log'
+          - 'SystemErr_*.log'
+      register: files_to_process
+
+    - name: Show count of logs to process
+      debug:
+        msg: "Found {{ files_to_process.files | length }} logs to archive under {{ logs_root }}"
+
+    # NOTE: Using archive per file produces a tar.gz per file (valid).
+    # If you prefer raw .gz (no tar), replace this block with a gzip command loop.
+    - name: Archive (compress) matched logs into individual .tar.gz and remove originals
+      archive:
+        path: "{{ item.path }}"
+        dest: "{{ item.path }}.gz"
+        owner: wasadmin
+        group: mqm
+        format: gz
+        remove: true
+      loop: "{{ files_to_process.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+      when: files_to_process.files | length > 0
+
+    - name: Find old archives to delete (older than {{ ret_days }})
+      find:
+        paths: "{{ logs_root }}"
+        file_type: file
+        recurse: true
+        age: "{{ ret_days }}"
+        patterns:
+          - 'SystemOut_*.gz'
+          - 'SystemErr_*.gz'
+      register: old_archives
+
+    - name: Show count of old archives to remove
+      debug:
+        msg: "Found {{ old_archives.files | length }} old archives to remove"
+
+    - name: Remove old archives
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ old_archives.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+      when: old_archives.files | length > 0
+
+    - name: Gather updated facts (to refresh ansible_mounts)
+      setup:
+
+    - name: Capture usage after the cleanups
+      command: df -h {{ logs_root }}
+      register: af_clnup
+
+    - debug:
+        var: af_clnup.stdout_lines
+
+    - name: Fail if free space under {{ (threshold_free_ratio * 100) | round(0) }}% after cleanup
+      fail:
+        msg: "Cleanup finished, still not enough space under {{ logs_root }} (free < {{ (threshold_free_ratio * 100) | round(0) }}%)."
+      when: >
+        ansible_mounts | selectattr('mount', 'equalto', logs_root)
+        | map(attribute='size_available') | list | first
+        <
+        (
+          ansible_mounts | selectattr('mount', 'equalto', logs_root)
+          | map(attribute='size_total') | list | first
+        ) | float * threshold_free_ratio
