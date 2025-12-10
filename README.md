@@ -121,8 +121,5 @@ MIT License — see LICENSE file for details (or add one if you want).
 ## Contact
 
 GitHub: https://github.com/piyushv080
+Thanks for checking out my Ansible playground. 
 
-Thanks for checking out my Ansible playground. If you'd like, I can:
-- push this README into the repository,
-- help add a CONTRIBUTING.md or LICENSE,
-- or create a small example playbook to demonstrate a particular topic (inventory, roles, or Vault).
