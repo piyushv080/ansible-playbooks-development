@@ -1,0 +1,25 @@
+$ cat /srv/scripts/ticketreduction/was_log_cleanup.yml
+# Description: clean-up WAS logs
+# Variables: None
+
+- name: Clean WAS LOG
+ hosts: was*
+ gather_facts: true
+ tasks:
+ - name: capture usage before the clenaups
+   shell: df -h /websphere/logs
+   register: bf_clnup
+ 
+ - debug: var=bf_clnup.stdout_lines
+ 
+ - name: Use multiple patterns to find files under /websphere/logs
+   find:
+     paths: /websphere/logs
+     file_type: file
+     recurse: yes
+     #use_regex: yes
+     patterns:
+       - 'SystemOut_*.log'
+       - 'SystemErr_*.log'
+   register: files_to_process
+
